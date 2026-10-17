@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Diary</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#0f172a;
+  --panel:#111c31;
+  --panel-2:#16233a;
+  --line:#24334a;
+  --text:#edf3fa;
+  --muted:#9aa9bc;
+  --blue:#3b82f6;
+  --blue-light:#60a5fa;
+  --blue-soft:#0d213b;
+  --green:#78c99f;
+  --yellow:#e8b968;
+  --max:820px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"DM Sans",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.72;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+::selection{background:#245da4;color:#fff}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#30425d;border-radius:8px}
+
+#particles-canvas,.orb{display:none}
+
+.header{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  height:64px;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  background:rgba(15,23,42,.94);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line);
+  animation:slideDown .5s ease both;
+}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-size:1.2rem;font-weight:700;
+  cursor:pointer;flex-shrink:0;
+}
+.logo .logo-icon{
+  width:34px;height:34px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--blue-soft);
+  border:1px solid #235183;
+}
+.logo .logo-icon span{font-size:20px;color:var(--blue-light)}
+.logo-text{color:var(--text)}
+
+.header-actions{display:flex;align-items:center;gap:9px;min-width:0}
+.search-wrap{position:relative;width:220px}
+.search-wrap input{
+  width:100%;padding:9px 12px 9px 38px;
+  border-radius:9px;border:1px solid var(--line);
+  background:var(--panel);color:var(--text);
+  font:400 .85rem "DM Sans",system-ui,sans-serif;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.search-wrap input:focus,.sort-wrap select:focus{
+  border-color:#235183;box-shadow:0 0 0 3px rgba(59,130,246,.13);
+}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-wrap .search-icon{
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:18px;pointer-events:none;
+}
+.icon-btn,.back-btn{
+  min-height:38px;border-radius:9px;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font:500 .84rem "DM Sans",system-ui,sans-serif;
+  cursor:pointer;transition:background .2s,border-color .2s,color .2s;
+}
+.icon-btn{width:38px}
+.back-btn{display:none;padding:8px 13px}
+.back-btn.active{display:flex}
+.icon-btn:hover,.back-btn:hover{
+  color:var(--blue-light);border-color:#235183;background:var(--blue-soft);
+}
+.icon-btn span,.back-btn span{font-size:20px}
+
+.view{display:none;position:relative;z-index:1}
+.view.active{display:block}
+.iframe-wrap{position:fixed;top:64px;left:0;right:0;bottom:0;z-index:1;display:none;background:var(--bg)}
+.iframe-wrap.active{display:block}
+.iframe-wrap iframe{width:100%;height:100%;border:0;background:var(--bg)}
+
+.hero{
+  position:relative;z-index:1;
+  width:min(var(--max),calc(100% - 36px));
+  margin:0 auto;padding:132px 0 36px;text-align:left;
+  animation:fadeInUp .65s ease .08s both;
+}
+.hero h1{
+  font-size:clamp(2.35rem,7vw,4.2rem);
+  font-weight:700;line-height:1.06;letter-spacing:-.045em;
+  color:var(--text);margin-bottom:14px;
+}
+.hero .tagline{font-size:17px;line-height:1.65;color:var(--muted);margin-bottom:0}
+@keyframes fadeInUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.controls{
+  position:relative;z-index:1;
+  width:min(var(--max),calc(100% - 36px));
+  margin:0 auto 18px;padding:0;
+  display:flex;justify-content:flex-end;align-items:center;
+}
+.sort-wrap{display:flex;align-items:center;gap:8px}
+.sort-wrap label{font-size:.82rem;color:var(--muted)}
+.sort-wrap select{
+  padding:8px 11px;border-radius:9px;border:1px solid var(--line);
+  background:var(--panel);color:var(--text);
+  font:400 .82rem "DM Sans",system-ui,sans-serif;
+  cursor:pointer;outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.cards-grid{
+  position:relative;z-index:1;
+  width:min(var(--max),calc(100% - 36px));
+  margin:0 auto;padding:0 0 54px;
+  display:flex;flex-direction:column;gap:13px;
+}
+.card{
+  position:relative;overflow:hidden;
+  display:flex;align-items:flex-start;gap:16px;
+  padding:22px;
+  background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  color:var(--text);text-decoration:none;cursor:pointer;
+  transition:background .22s,border-color .22s,transform .22s;
+  animation:cardIn .45s ease both;
+}
+@keyframes cardIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--blue);transform:scaleY(0);transform-origin:center;
+  transition:transform .22s;
+}
+.card:hover,.card:focus-visible{
+  background:var(--panel-2);border-color:#2b4565;transform:translateY(-2px);
+}
+.card:hover::before,.card:focus-visible::before{transform:scaleY(1)}
+.card:focus-visible{outline:2px solid var(--blue-light);outline-offset:3px}
+.card-icon-wrap{
+  width:44px;height:44px;flex-shrink:0;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--blue-soft);border:1px solid #203c5d;
+  transition:background .2s;
+}
+.card:hover .card-icon-wrap{background:#12305a}
+.card-icon-wrap span{font-size:22px;color:var(--blue-light)}
+.card-body{flex:1;min-width:0}
+.card h2{font-size:1.15rem;line-height:1.35;font-weight:700;color:var(--blue-light);margin:0 0 6px;letter-spacing:-.015em}
+.card p{font-size:.92rem;color:var(--muted);line-height:1.6;margin:0}
+.card-meta-row{
+  display:flex;align-items:center;gap:15px;flex-wrap:wrap;
+  margin-top:13px;padding-top:12px;border-top:1px solid var(--line);
+}
+.card-meta-item{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--muted)}
+.card-meta-item span{font-size:15px;color:#71839a}
+.card-arrow{margin-left:auto;align-self:center;color:var(--blue-light);opacity:.65;transition:transform .2s,opacity .2s}
+.card:hover .card-arrow{opacity:1;transform:translateX(3px)}
+.no-results{text-align:center;padding:55px 20px;color:var(--muted)}
+.no-results span{display:block;font-size:2.5rem;color:#71839a;margin-bottom:12px}
+.no-results h3{font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:5px}
+.no-results p{font-size:.9rem}
+
+.footer{
+  position:relative;z-index:1;text-align:center;
+  padding:25px 20px 32px;border-top:1px solid var(--line);
+  color:#687991;font-size:.8rem;
+}
+.footer a{color:var(--blue-light);text-decoration:none;transition:opacity .2s}
+.footer a:hover{opacity:.75}
+.footer-socials{display:flex;justify-content:center;gap:9px;margin-bottom:13px}
+.footer-socials a{
+  width:38px;height:38px;border-radius:9px;border:1px solid var(--line);
+  background:var(--panel);display:flex;align-items:center;justify-content:center;
+  text-decoration:none;transition:background .2s,border-color .2s;
+}
+.footer-socials a:hover{border-color:#235183;background:var(--blue-soft)}
+.footer-socials a span{font-size:19px;color:var(--muted)}
+.footer-socials a:hover span{color:var(--blue-light)}
+
+@media(max-width:600px){
+  .header{padding:0 14px;gap:9px}
+  .logo{font-size:1rem;gap:8px}
+  .logo .logo-icon{width:31px;height:31px}
+  .header-actions{gap:6px}
+  .search-wrap{width:min(37vw,165px)}
+  .search-wrap input{padding:9px 8px 9px 32px;font-size:.8rem}
+  .search-wrap .search-icon{left:9px}
+  .hero{width:calc(100% - 28px);padding:119px 0 29px}
+  .hero h1{font-size:clamp(2.2rem,10vw,3rem)}
+  .hero .tagline{font-size:15px}
+  .controls,.cards-grid{width:calc(100% - 28px)}
+  .cards-grid{padding-bottom:42px;gap:11px}
+  .card{padding:17px 15px;gap:12px}
+  .card-icon-wrap{width:39px;height:39px}
+  .card-icon-wrap span{font-size:20px}
+  .card h2{font-size:1.03rem}
+  .card p{font-size:.86rem}
+  .card-meta-row{gap:9px;margin-top:11px;padding-top:10px}
+  .card-meta-item{font-size:.7rem}
+  .card-arrow{opacity:.8}
+  .back-btn{padding:7px 9px;font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+
+</style>
+</head>
+
+<body>
+<header class="header">
+  <div class="logo" onclick="goHome()">
+    <div class="logo-icon"><span class="material-symbols-rounded">shield</span></div>
+    <span class="logo-text">Digital Diary</span>
+  </div>
+
+  <div class="header-actions">
+    <button class="back-btn" id="backBtn" onclick="goHome()">
+      <span class="material-symbols-rounded">arrow_back</span>
+      Back
+    </button>
+    <div class="search-wrap" id="searchWrap">
+      <span class="material-symbols-rounded search-icon">search</span>
+      <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+    <button class="icon-btn" onclick="toggleMusic()" title="Toggle Music">
+      <span class="material-symbols-rounded" id="musicIcon">music_note</span>
+    </button>
+  </div>
+</header>
+
+<div class="view active" id="homeView">
+  <section class="hero">
+    <h1>MeowBlog</h1>
+    <p class="tagline">A place where i write blogs, poems, quotes, articles and tutorials</p>
+  </section>
+
+  <div class="controls">
+    <div class="sort-wrap">
+      <label>Sort by:</label>
+      <select id="sortSelect">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="az">A-Z</option>
+        <option value="za">Z-A</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cards-grid" id="cardsGrid"></div>
+
+  <footer class="footer">
+    <div class="footer-socials">
+      <a href="https://github.com/MeowDump" target="_blank" title="GitHub">
+        <span class="material-symbols-rounded">code</span>
+      </a>
+      <a href="https://t.me/MeowDump" target="_blank" title="Telegram">
+        <span class="material-symbols-rounded">send</span>
+      </a>
+      <a href="https://t.me/IntegrityBox" target="_blank" title="Integrity Box Channel">
+        <span class="material-symbols-rounded">groups</span>
+      </a>
+    </div>
+    Authored by <a href="https://t.me/MeowDump" target="_blank">𝗠𝗘𝗢𝗪𝗻𝗮 💅</a> · <span id="footerDate"></span>
+  </footer>
+</div>
+
+<div class="iframe-wrap" id="iframeView">
+  <iframe id="pageFrame" src=""></iframe>
+</div>
+
+<audio id="bg-music" src="music.mp3" loop></audio>
+
+<script>
+const resources = [
+  {
+    id:1,
+    title:"Soul",
+    desc:"A poem written be me",
+    icon:"public",
+    author:"𝗠𝗘𝗢𝗪𝗻𝗮 💅",
+    date:"2026-03-16",
+    link:"poem.html"
+  },
+  {
+    id:2,
+    title:"The Invisible Eye",
+    desc:"Privacy does not exist in 2026",
+    icon:"air",
+    author:"𝗠𝗘𝗢𝗪𝗻𝗮 💅",
+    date:"2026-04-30",
+    link:"osint.html"
+  }
+];
+function formatDate(dateStr){
+  const d = new Date(`${dateStr}T00:00:00`);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.floor((today-d)/(1000*60*60*24));
+  if(diff===0) return "Today";
+  if(diff===1) return "Yesterday";
+  if(diff>1 && diff<7) return `${diff} days ago`;
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function renderCards(data){
+  const grid = document.getElementById('cardsGrid');
+  if(data.length===0){
+    grid.innerHTML = `<div class="no-results">
+      <span class="material-symbols-rounded">search_off</span>
+      <h3>No results found</h3>
+      <p>Try adjusting your search or filters</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = data.map((item,i)=>`
+    <a class="card" style="animation-delay:${i*0.07}s" href="#${item.link.replace('.html','')}" onclick="event.preventDefault();openPage('${item.link}')">
+      <div class="card-icon-wrap"><span class="material-symbols-rounded">${item.icon}</span></div>
+      <div class="card-body">
+        <h2>${item.title}</h2>
+        <p>${item.desc}</p>
+        <div class="card-meta-row">
+          <div class="card-meta-item">
+            <span class="material-symbols-rounded">person</span>
+            ${item.author}
+          </div>
+          <div class="card-meta-item">
+            <span class="material-symbols-rounded">calendar_today</span>
+            ${formatDate(item.date)}
+          </div>
+        </div>
+      </div>
+      <span class="material-symbols-rounded card-arrow">arrow_forward</span>
+    </a>
+  `).join('');
+}
+
+let currentSort = 'newest';
+let searchQuery = '';
+
+function filterAndSort(){
+  let result = [...resources];
+  if(searchQuery){
+    const q = searchQuery.toLowerCase();
+    result = result.filter(r=>
+      r.title.toLowerCase().includes(q)||
+      r.desc.toLowerCase().includes(q)||
+      r.author.toLowerCase().includes(q)
+    );
+  }
+  result.sort((a,b)=>{
+    switch(currentSort){
+      case 'newest': return new Date(b.date)-new Date(a.date);
+      case 'oldest': return new Date(a.date)-new Date(b.date);
+      case 'az': return a.title.localeCompare(b.title);
+      case 'za': return b.title.localeCompare(a.title);
+      default: return 0;
+    }
+  });
+  renderCards(result);
+}
+
+document.getElementById('sortSelect').addEventListener('change',(e)=>{
+  currentSort = e.target.value;
+  filterAndSort();
+});
+
+document.getElementById('searchInput').addEventListener('input',(e)=>{
+  searchQuery = e.target.value.trim();
+  filterAndSort();
+});
+
+function openPage(url, updateHistory = true) {
+  document.getElementById('homeView').classList.remove('active');
+  document.getElementById('iframeView').classList.add('active');
+  document.getElementById('pageFrame').src = url;
+  document.getElementById('backBtn').classList.add('active');
+  document.getElementById('searchWrap').style.display = 'none';
+  if(updateHistory) history.pushState({page:url}, '', '#' + url.replace('.html', ''));
+}
+
+function goHome(updateHistory = true) {
+  document.getElementById('iframeView').classList.remove('active');
+  document.getElementById('homeView').classList.add('active');
+  document.getElementById('pageFrame').src = '';
+  document.getElementById('backBtn').classList.remove('active');
+  document.getElementById('searchWrap').style.display = '';
+  if(updateHistory) history.pushState({}, '', window.location.pathname + window.location.search);
+}
+
+function restoreRoute() {
+  const resource = resources.find(item => '#' + item.link.replace('.html', '') === window.location.hash);
+  if(resource) openPage(resource.link, false);
+}
+
+window.addEventListener('popstate', event => {
+  if(event.state && event.state.page) openPage(event.state.page, false);
+  else if(window.location.hash) restoreRoute();
+  else goHome(false);
+});
+
+const music = document.getElementById('bg-music');
+const musicIcon = document.getElementById('musicIcon');
+let musicStarted = false;
+
+async function toggleMusic(){
+  if(music.paused){
+    try {
+      await music.play();
+      musicIcon.textContent = 'music_note';
+    } catch {
+      musicIcon.textContent = 'music_off';
+    }
+  } else {
+    music.pause();
+    musicIcon.textContent = 'music_off';
+  }
+}
+
+music.addEventListener('play',()=>musicIcon.textContent='music_note');
+music.addEventListener('pause',()=>musicIcon.textContent='music_off');
+
+document.addEventListener('click',e=>{
+  const link = e.target.closest('a');
+  if(link && link.href && link.getAttribute('href').startsWith('http') && !link.href.includes(window.location.hostname)){
+    e.preventDefault();
+    window.open(link.href,'_blank','noopener');
+  }
+});
+
+document.getElementById('footerDate').textContent = new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+
+filterAndSort();
+restoreRoute();
+</script>
+
+</body>
+</html>

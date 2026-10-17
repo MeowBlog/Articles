@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Awareness</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f172a;
+  --panel:#111c31;
+  --panel-2:#16233a;
+  --line:#24334a;
+  --text:#edf3fa;
+  --muted:#9aa9bc;
+  --blue:#3b82f6;
+  --blue-light:#60a5fa;
+  --blue-soft:#0d213b;
+  --green:#78c99f;
+  --yellow:#e8b968;
+  --max:820px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:"DM Sans",system-ui,sans-serif;
+  font-size:16px;line-height:1.72;
+}
+::selection{background:#245da4;color:#fff}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#30425d;border-radius:8px}
+.container{width:min(var(--max),calc(100% - 36px));margin:auto}
+header{padding:58px 0 38px}
+.brand{font-size:12px;font-weight:700;color:var(--blue-light);letter-spacing:.7px;margin-bottom:22px}
+h1{font-size:clamp(2.35rem,7vw,4.2rem);line-height:1.06;letter-spacing:-.045em;margin-bottom:18px}
+h1 span{color:var(--blue-light)}
+.lead{max-width:730px;color:var(--muted);font-size:17px}
+.notice{
+  margin-top:25px;padding:17px 19px;
+  background:var(--blue-soft);border:1px solid #235183;
+  border-left:3px solid var(--blue);border-radius:9px;
+  color:#b9c9dc;font-size:14px;
+}
+.notice strong{color:#fff}
+main{padding-bottom:45px}
+section{border-top:1px solid var(--line);padding:42px 0}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--blue-light);font-weight:700;margin-bottom:7px}
+h2{font-size:clamp(1.7rem,4vw,2.25rem);line-height:1.2;letter-spacing:-.025em;margin-bottom:13px}
+p{margin-bottom:16px}
+.muted{color:var(--muted)}
+strong{color:#f6f8fb}
+ul{padding-left:20px;margin-top:16px}
+li{padding:5px 0;color:#c5d1df}
+li strong{color:#fff}
+.quote{
+  margin:24px 0;padding:19px 21px;
+  border-left:3px solid var(--blue);
+  background:var(--panel);color:#d8e3ef;
+  border-radius:0 8px 8px 0;
+}
+.terminal{
+  margin:24px 0;
+  border:1px solid #2b4565;border-radius:9px;
+  overflow:hidden;background:#080f1b;
+  font:12px/1.75 "JetBrains Mono",monospace;
+}
+.terminal-head{
+  padding:9px 13px;background:#111c31;
+  border-bottom:1px solid var(--line);
+  color:#71839a;font:11px "DM Sans",sans-serif;
+}
+.terminal-dots{display:inline-flex;gap:5px;margin-right:9px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.red{background:#ff605c}.dot.yellow{background:#ffbd44}.dot.green{background:#00ca4e}
+.terminal-body{padding:16px;overflow-x:auto;white-space:pre;color:#8fa2b9}
+.cmd{color:var(--blue-light)}.warn{color:var(--yellow)}.hit{color:#c7d8ea}.ok{color:var(--green)}.muted-terminal{color:#64748b}
+.heart{
+  margin-top:22px;padding:27px 25px;
+  background:var(--panel-2);
+  border:1px solid #2b4b72;border-radius:10px;
+}
+.heart h3{font-size:1.35rem;line-height:1.35;margin-bottom:14px}
+.heart .opening{font-size:17px;color:#dce7f2}
+.personal{
+  margin:20px 0;padding:17px 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  color:#d0dbe7;
+}
+.permission{
+  margin-top:20px;padding:20px;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:9px;
+}
+.permission h3{margin-bottom:8px;font-size:1.05rem}
+.permission p:last-child{margin-bottom:0}
+.step{padding:16px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0}
+.step b{display:block;margin-bottom:3px}
+.step p{margin:0;color:var(--muted)}
+.clown{
+  margin-top:20px;padding:22px 22px;
+  border-left:3px solid var(--blue);
+  background:var(--panel);
+}
+.clown h3{font-size:1.15rem;margin-bottom:8px}
+.final{
+  margin-top:22px;padding:21px;
+  background:var(--panel);border:1px solid var(--line);border-radius:9px;
+}
+.final p:last-child{margin-bottom:0;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:25px 0 35px;color:#687991;font-size:12px}
+@media(max-width:600px){
+  .container{width:calc(100% - 28px)}
+  header{padding:43px 0 30px}
+  section{padding:34px 0}
+  .lead{font-size:15px}
+  .heart{padding:22px 18px}
+  .terminal{font-size:11px}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="container">
+  <div class="brand">PRIVACY AWARENESS </div>
+  <h1>Your <span>username</span> can reveal more than you think.</h1>
+  <p class="lead">You don't need to be hacked for somebody to learn a frightening amount about you. Sometimes all it takes is a username, an old number, a few forgotten accounts, and somebody willing to connect them.</p>
+  <div class="notice"><strong>Before you read:</strong> this is not part of the IntegrityBox module. I added it because I can reach a lot of people directly, and I'd rather use that reach to teach people something that can actually protect them. You don't need to become an expert. You should at least know what can be done with the information you leave behind.</div>
+</div>
+</header>
+
+<main>
+<section><div class="container">
+  <div class="kicker">Start here</div>
+  <h2>OSINT sounds complicated. It really isn't.</h2>
+  <p>OSINT stands for <strong>Open Source Intelligence</strong>. In plain English, it means taking information that is already out there and figuring out how the pieces belong together.</p>
+  <p>A username on one site. An email address on another. An old number in a leaked database. A photo that gives away where it was taken. An account you made years ago and forgot about.</p>
+  <p>Each thing looks small on its own. That is what makes this easy to underestimate.</p>
+  <p>Give somebody enough of those small things and they stop looking like separate pieces. They start looking like a person.</p>
+  <div class="quote">The frightening part of OSINT isn't that every piece of information is secret. It's that ordinary information can become dangerous when the right person connects it.</div>
+</div></section>
+
+<section><div class="container">
+  <div class="kicker">See how quickly it adds up</div>
+  <h2>This is what the process can look like.</h2>
+  <p>This kind of search used to take hours. Much of it can now be automated. Someone doesn't need to be a brilliant hacker; they may just need a bot, a starting point, and patience.</p>
+  <p>The example below is deliberately dramatic because I want the idea to be obvious. <strong>The data is fictional.</strong> The process is what matters.</p>
+
+  <div class="terminal">
+    <div class="terminal-head">
+      <span class="terminal-dots"><i class="dot red"></i><i class="dot yellow"></i><i class="dot green"></i></span>
+      fielding_setter.sh
+    </div>
+    <div class="terminal-body"><span class="hit">[+] Initiating cross-platform correlation...</span>
+<span class="hit">[*] Found matching username on: Twitter, Instagram, Reddit, GitHub</span>
+<span class="hit">[*] Extracted email: monameow@gmail.com</span>
+<span class="hit">[*] Extracted phone: +91-8574-***-80</span>
+<span class="hit">[*] Location tags detected: New Delhi, India</span>
+
+<span class="cmd">$</span> query_breach_db --email "monameow@gmail.com"
+
+<span class="warn">[!] 14 BREACH RECORDS FOUND</span>
+<span class="hit">  → LinkedIn (2012), Name, Email, Password Hash</span>
+<span class="hit">  → Minecraft (2018),Email</span>
+<span class="hit">  → Facebook (2019), Name, Phone, Birthdate, Location</span>
+<span class="hit">  → Nekogram (2026), Phone Number</span>
+<span class="hit">  → ... 10 more records ...</span>
+
+<span class="cmd">$</span> compile_profile --mode full
+
+<span class="hit">[+] PROFILE ASSEMBLED IN 28.4 SECONDS</span>
+<span class="ok">→ Full Name: Mona</span>
+<span class="ok">→ Address: Singh Colony, Near Sarojini Market, New Delhi, India</span>
+<span class="ok">→ Phone: +91-8574-***-80</span>
+<span class="ok">→ IP: 109.70.10.5694</span>
+<span class="ok">→ Employer: New Legal Consultants</span>
+
+<span class="cmd">$</span> _</div>
+  </div>
+
+  <p>Notice what happened. Nobody needed one magical database containing a complete biography. The information came from different places. The trick was simply connecting it.</p>
+  <p>Reusing the same username, email address, or phone number can make it easier to connect different parts of your life. Each repeated identifier creates another possible link.</p>
+</div></section>
+
+<section><div class="container">
+  <div class="kicker">Are You Delusional too?</div>
+  <h2>“I'm not a celebrity. I don't care.”</h2>
+  <p>I've heard this attitude too many times: <em>“Why would anyone care about my information? I'm nobody.”</em></p>
+  <p>That is not how this works.</p>
+  <p>You don't have to be famous for your information to be useful. You have a phone number. You have family. You probably have an email account, old passwords, photos, accounts you forgot about, places you go, people you know, and things you would rather not have a stranger digging through.</p>
+  <p>The person looking for you doesn't need a reason that makes sense to you. It could be a scammer. Someone angry after an argument. Someone trying to impersonate you. Someone who simply wants to cause trouble.</p>
+  <p>And once somebody has enough information, they can stop guessing. They can start calling people who know you. They can pretend to be you. They can find old accounts. They can work out where you live or where you spend your time.</p>
+  <p><strong>“Nobody is interested in me” is not privacy. It's luck.</strong></p>
+</div></section>
+
+<section><div class="container">
+  <div class="kicker">The part I actually wanted to write</div>
+  <h2>I'm writing this fearlessly, but how?</h2>
+  <div class="heart">
+    <h3>I'm not invisible. I just don't want one clue to unlock the rest of my life.</h3>
+    <p class="opening">I've been careful about this for years. I don't think I'm especially important, and I don't believe I can disappear from the internet. I just don't like the idea of a stranger finding one detail about me and using it to piece together the rest.</p>
+    <p>Since 2018, I've used different usernames, email addresses, and virtual phone numbers for different parts of my online life. I change them when I can, and I check from time to time to see what information about me is still out there.</p>
+    <p>I've also run OSINT bots against myself, I still do. They sometimes return different names, addresses, and phone numbers, partly because I've changed my details and partly because old information keeps circulating. Those checks aren't perfect, but they give me an idea of what someone else might find.</p>
+    <p>Living in India has made one part of this easier. Getting virtual numbers with the +91 country code has been relatively cheap and straightforward for me. I've changed the numbers I use over the years; in the last six years, I've used 27 different Indian virtual numbers on my main Telegram account. That account isn't tied to my real identity either. (I bought it)</p>
+    <p>I can't tell when a website or app will suffer a data breach. When leaked databases turn up, I check the information I've used. So far, the leaks I've seen have contained old virtual numbers I no longer use, not my current ones either. That doesn't mean I'm safe forever. It means changing details can sometimes limit how useful an old leak is.</p>
+    <div class="personal"><strong>That's the whole strategy.</strong> I'm not trying to become impossible to find. I'm trying to stop one leaked number, one username, or one careless website from becoming the master key to my entire digital identity.</div>
+    <p>When I use a virtual number, I generally prefer one from the country where I live. A local number may look less out of place than one from another country, but it doesn't make you anonymous, and a foreign number doesn't prove anything suspicious. It's just one consideration, not a guarantee.</p>
+    <p>People sometimes think privacy means hiding something. It doesn't. I just don't think a random stranger needs a map of my life.</p>
+    <p>I've never had accounts on Facebook, Instagram, TikTok, Twitter, or the other big social platforms which you use daily. I use Telegram and WhatsApp. I also don't use banking apps or banking services, and I don't have a bank account in my name. When someone wants to send me money or a donation, I rely on a friend to receive it. That arrangement depends on trust, and I take that seriously. Trust is like glass: once it's broken, you can try to repair it, but it never quite goes back to how it was.</p>
+    <p>Still, being careful doesn't mean you can control everything. You can keep two accounts separate and an app can collect information that links them. That's why I want to talk about Nekogram.</p>
+    <p>Nekogram is an unofficial Telegram client, developed outside Telegram's official team. Its developers have reportedly acknowledged collecting sensitive information, including users' phone numbers and how many Telegram accounts they had. That raises an obvious privacy concern: information like this could connect accounts that someone deliberately kept separate.</p>
+    <p>Imagine you have two Telegram accounts. One is a pseudonymous account registered with a virtual number, used for public groups and conversations with strangers. The other is your personal account, registered with your actual number and used only with people who already know you.</p>
+    <p>You don't message strangers from your personal account, and you don't reuse usernames between the two. You think you've kept them separate.</p>
+    <p>But if the same third-party client has access to both accounts and collects identifying information from them, it may be able to connect them. The link wouldn't have to come from a message between the accounts. It could come from what the client itself collected.</p>
+    <p>That doesn't, by itself, prove the information was sold to OSINT companies or data brokers. That claim needs evidence. But the possibility that an app could collect enough information to connect your accounts is concerning on its own. You shouldn't have to wait for your details to appear in a leak before asking where they went.</p>
+    <p>That's the puzzle I keep coming back to. A phone number, an account, a username, or an address might not reveal much alone. Put enough of them together, and someone can start seeing a much bigger picture of your life.</p>
+    <p>Privacy works better as a habit than as a single setting. Before sharing something, ask yourself:</p>
+    <p><strong>“Does this person or this app actually need to know this?”</strong></p>
+    <p>If the answer is no, why give it to them?</p>
+    <p>You can't prevent every breach or control every app developer. You can decide how much information you hand over, how often you reuse it, and which apps you trust with it. Use separate email addresses or usernames when it makes sense, review old accounts, and remove details you no longer need to share.</p>
+    <p>And don't mistake keeping accounts separate for being completely anonymous. Sometimes the weakest link isn't your password or username. It's the app sitting between you and the service you thought you were using.</p>
+  </div>
+</div></section>
+
+<section><div class="container">
+  <div class="kicker">Something else people ignore</div>
+  <h2>Stop giving apps permissions they don't need.</h2>
+  <p>Most people see a permission popup and press <strong>Allow</strong> before they have even thought about what they are allowing.</p>
+  <div class="permission">
+    <h3>Look at the permission in context.</h3>
+    <p>A keyboard app needs access to function as a keyboard. A camera app needs the camera. A navigation app having your location makes sense.</p>
+    <p>But imagine a keyboard app asking for your location and contacts. Or a simple camera app asking for your call logs, contacts and other information it has no obvious reason to use.</p>
+    <p>Why?</p>
+    <p>You don't have to accept a permission just because an app asks for it. Deny it. If a feature genuinely needs it later, you can decide then.</p>
+  </div>
+  <p>I'm not saying “deny every permission.” That would be just as stupid. I'm saying <strong>pay attention to what you're handing over.</strong> If the request makes no sense for the job the app is supposed to do, that's a good reason to say no.</p>
+</div></section>
+
+<section><div class="container">
+  <div class="kicker">A few things worth changing</div>
+  <h2>You don't need a complicated privacy routine.</h2>
+  <div class="step"><b>Stop reusing the same identity everywhere.</b><p>One username connecting five accounts is convenient. It is also five breadcrumbs pointing in the same direction.</p></div>
+  <div class="step"><b>Protect your main phone number.</b><p>Don't give it to every website, app, shop or random service that asks. Your number can become the link between many accounts.</p></div>
+  <div class="step"><b>Use unique passwords and 2FA.</b><p>An old leaked password should not work on your current accounts. A password manager makes unique passwords practical.</p></div>
+  <div class="step"><b>Clean up things you forgot about.</b><p>Old accounts are still accounts. If you haven't used one in years, consider deleting it instead of leaving another copy of your information online.</p></div>
+  <div class="step"><b>Search for yourself.</b><p>Look up your usernames, email addresses and old numbers once in a while. You may be surprised by what you find.</p></div>
+  <div class="step"><b>Think before posting.</b><p>A photo can show a location. A document can contain metadata. A casual post can reveal where you work or who your family is. You don't need to stop posting; just look at what you're actually showing.</p></div>
+</div></section>
+
+<section><div class="container">
+  <div class="final">
+    <p><strong>You don't need to be famous to deserve privacy.</strong></p>
+    <p>The internet remembers more than most people realize. Hopefully nobody ever decides to look for you. But if they do, make sure a single username isn't enough to hand them the rest of your life. Thanks for reading. I wish you all the best.</p>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="container">Published by Mona  ©2016  All Rights Reserved</div></footer>
+</body>
+</html>
