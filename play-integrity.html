@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1120">
+<title>Integrity Box — Play Integrity Troubleshooting</title>
+<style>
+:root{
+  --bg:#0b1120;--panel:#111b2e;--panel2:#15223a;--line:#253650;
+  --text:#e8eef7;--muted:#a2b0c4;--blue:#60a5fa;--blue2:#3b82f6;
+  --soft:#102746;--green:#8dd6ad;--yellow:#f0c777;--red:#f19a9a;
+  --max:900px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg);scroll-padding-top:20px}
+body{background:var(--bg);color:var(--text);font:16px/1.75 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:#245da4;color:#fff}
+.container{width:min(var(--max),calc(100% - 36px));margin:auto}
+header{padding:58px 0 40px}
+.brand{font-size:12px;font-weight:800;letter-spacing:1.5px;color:var(--blue);text-transform:uppercase;margin-bottom:22px}
+h1{font-size:clamp(2.35rem,7vw,4rem);line-height:1.08;letter-spacing:-.045em;margin-bottom:18px}
+h1 span{color:var(--blue)}
+.lead{max-width:760px;color:var(--muted);font-size:17px}
+.notice{margin-top:25px;padding:17px 19px;background:var(--soft);border:1px solid #235183;border-left:3px solid var(--blue2);border-radius:10px;color:#c4d4e8;font-size:14px}
+.notice strong{color:#fff}
+.start-here{margin-top:18px}
+.start-here ol{margin:8px 0 8px;padding-left:22px}
+.start-here li{padding:2px 0}
+nav{margin-top:28px;padding:18px 20px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+nav strong{display:block;margin-bottom:8px}
+nav ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 24px;padding-left:18px}
+nav li{color:var(--muted);padding:2px 0;font-size:14px}
+main{padding-bottom:40px}
+section{border-top:1px solid var(--line);padding:42px 0}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);font-weight:800;margin-bottom:7px}
+h2{font-size:clamp(1.65rem,4vw,2.2rem);line-height:1.2;letter-spacing:-.025em;margin-bottom:14px}
+h3{font-size:1.1rem;line-height:1.4;margin-bottom:8px}
+p{margin-bottom:15px}
+p:last-child{margin-bottom:0}
+strong{color:#f7f9fc}
+ul,ol{padding-left:22px;margin:12px 0 17px}
+li{padding:4px 0;color:#c6d2e1}
+li strong{color:#fff}
+.muted{color:var(--muted)}
+.path{display:inline-block;padding:2px 7px;border:1px solid #30445f;background:#0b1424;border-radius:5px;color:#d7e5f7;font-size:.92em}
+.card{margin:18px 0;padding:20px 21px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.card.blue{background:var(--soft);border-color:#235183}
+.card.warning{border-left:3px solid var(--yellow)}
+.card.danger{border-left:3px solid var(--red)}
+.card.success{border-left:3px solid var(--green)}
+.card p:last-child,.card ul:last-child,.card ol:last-child{margin-bottom:0}
+.step{display:grid;grid-template-columns:34px 1fr;gap:12px;padding:17px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0}
+.num{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:#17365d;color:#a9d0ff;font-weight:800;font-size:13px}
+.step p{color:var(--muted);margin:0}
+
+.choice-list{display:grid;gap:14px;margin:20px 0}
+.choice-row{display:grid;grid-template-columns:220px 1fr;gap:14px;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.choice-label{display:flex;align-items:center;gap:12px}
+.choice-number{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:10px;background:#17365d;color:#b9d7ff;font-weight:800}
+.choice-label strong,.choice-option strong{display:block;color:#f7f9fc}
+.choice-label small,.choice-option small{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.choice-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice-option{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;background:#0d1728;border:1px solid #2a3d58;border-radius:9px;color:var(--text);text-decoration:none}
+.choice-option:hover{border-color:var(--blue);background:#12233b;text-decoration:none}
+.choice-option .arrow{color:var(--blue);font-size:18px}
+
+.single-reference{width:100%;max-width:none;margin:18px 0}
+.reference-card img{aspect-ratio:auto;object-fit:contain;max-height:300px;padding:10px;cursor:zoom-in}
+.single-reference .reference-card{display:grid;grid-template-columns:minmax(220px,30%) minmax(0,1fr);align-items:stretch}
+.single-reference .reference-card .image-open{display:flex;align-items:center;justify-content:center;min-height:180px;background:#0a1220;border-right:1px solid var(--line)}
+.single-reference .reference-card img{width:100%;height:100%;min-height:180px;max-height:300px;aspect-ratio:auto;object-fit:contain;border:0;padding:10px}
+.single-reference .reference-copy{align-self:center;padding:22px 24px}
+.reference-grid:has(>.reference-card:only-child){display:block}
+.reference-grid:has(>.reference-card:only-child)>.reference-card{display:grid;grid-template-columns:minmax(220px,30%) minmax(0,1fr);align-items:stretch}
+.reference-grid:has(>.reference-card:only-child)>.reference-card .image-open{display:flex;align-items:center;justify-content:center;background:#0a1220;border-right:1px solid var(--line)}
+.reference-grid:has(>.reference-card:only-child)>.reference-card img{height:100%;max-height:300px;aspect-ratio:auto;object-fit:contain;padding:10px}
+.reference-grid:has(>.reference-card:only-child)>.reference-card .reference-copy{align-self:center;padding:22px 24px}
+.lightbox-dialog{overflow:hidden}
+.lightbox-image-wrap{width:100%;height:min(68vh,760px);overflow:auto;display:block;border-radius:7px;background:#080f1b;overscroll-behavior:contain}
+.lightbox-image{display:block;width:auto;height:auto;max-width:none;max-height:none;object-fit:contain;transform:none;border-radius:0;margin:0}
+.lightbox-image-wrap .lightbox-image{flex-shrink:0}
+.lightbox{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(3,8,17,.88);backdrop-filter:blur(8px)}
+.lightbox.open{display:flex}
+.lightbox-dialog{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:12px;width:min(94vw,760px);max-height:92vh;padding:16px;background:#101a2b;border:1px solid #344863;border-radius:14px;box-shadow:0 24px 80px #0009}
+.lightbox-tools{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.lightbox-tools button{border:1px solid #435875;border-radius:8px;background:#0b1424;color:#e8eef7;padding:7px 12px;cursor:pointer;font:inherit;font-size:13px}
+.lightbox-tools button:hover{background:#1b2e49}
+.zoom-level{min-width:54px;text-align:center;color:#b8c7db;font-size:12px}
+.lightbox-caption{color:#c5d2e3;text-align:center;font-size:13px}
+.lightbox-close{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border:1px solid #435875;border-radius:9px;background:#0b1424;color:#fff;font-size:22px;cursor:pointer}
+.lightbox-close:hover{background:#1b2e49}
+
+.reference-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:20px 0}
+.reference-card{overflow:hidden;border:1px solid var(--line);background:var(--panel);border-radius:11px}
+.reference-card a{display:block}.image-open{display:block;width:100%;border:0;background:transparent;padding:0;cursor:zoom-in}.image-open img{width:100%}
+.reference-card img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#0a1220;border-bottom:1px solid var(--line)}
+.reference-copy{padding:13px 15px}
+.reference-copy strong{display:block;margin-bottom:4px}
+.reference-copy p{color:var(--muted);font-size:13px;line-height:1.55;margin:0}
+.open-app{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border-radius:9px;background:var(--blue2);color:#fff;font-weight:750;margin:4px 0 18px}
+.open-app:hover{background:#2563eb;text-decoration:none}
+.open-app span{font-size:18px}
+
+.module{padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:9px}
+.module p{font-size:14px;color:var(--muted);margin:5px 0 10px}
+.module a{font-size:14px;font-weight:700}
+.pill{display:inline-block;font-size:11px;letter-spacing:.4px;text-transform:uppercase;padding:3px 7px;border-radius:5px;background:#1b304d;color:#b9d7ff;margin-bottom:8px}
+hr{border:0;border-top:1px solid var(--line);margin:24px 0}
+footer{border-top:1px solid var(--line);padding:25px 0 35px;color:#74849b;font-size:12px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.footer-actions{display:flex;align-items:center;gap:10px}
+.icon-link,.copy-link{display:grid;place-items:center;width:38px;height:38px;border:1px solid #2b405d;border-radius:10px;background:var(--panel);color:#c9d7e8;cursor:pointer}
+.icon-link:hover,.copy-link:hover{border-color:var(--blue);color:var(--blue);text-decoration:none}
+.icon-link svg,.copy-link svg{width:19px;height:19px}
+.copy-status{color:var(--green);font-size:12px;min-width:1px}
+@media(max-width:620px){
+ .container{width:calc(100% - 28px)}header{padding:42px 0 30px}
+ section{padding:34px 0}nav ul,.module-list{grid-template-columns:1fr}
+ .lead{font-size:15px}.card{padding:17px}
+ .choice-row{grid-template-columns:1fr}.choice-options{grid-template-columns:1fr}
+ .reference-grid{grid-template-columns:1fr}
+ .single-reference .reference-card,.reference-grid:has(>.reference-card:only-child)>.reference-card{grid-template-columns:1fr}
+ .single-reference .reference-card .image-open,.reference-grid:has(>.reference-card:only-child)>.reference-card .image-open{border-right:0;border-bottom:1px solid var(--line)}
+ .single-reference .reference-copy,.reference-grid:has(>.reference-card:only-child)>.reference-card .reference-copy{padding:16px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="brand">IThis guide covers Play Integrity troubleshooting for Integrity Box</div>
+    <h1>Fixing <span>Play Integrity</span></h1>
+    <p class="lead">This guide is only about Play Integrity. It does not provide root hiding, app security bypass, or methods to bypass an app's own security checks. Results depend on your device, ROM, keybox, Google services, and Google's current checks.</p>
+</header>
+
+<main>
+<section id="rom-spoofing"><div class="container">
+  <div class="kicker">Custom ROM users</div>
+  <h2>1. Disable the ROM's built-in spoofing</h2>
+  <p>If you use a custom ROM. Some ROMs apply their own device-property or Play Store spoofing, which overrides Integrity Box's pixel spoofing. It is recommended to disable the ROM's built-in spoofing before proceeding. IntegrityBox disables it by default.</p>
+  <ol>
+    <li>Open your ROM settings.</li>
+    <li>Look under <span class="path">Miscellaneous ↝ Spoofing</span> or a similar Play Integrity menu.</li>
+    <li>If the option exists, disable the ROM's built-in spoofing.</li>
+    <li>If there is no such option, open <strong>Integrity Box WebUI ↝ ROM Spoofing ↝ You will see total  4  options there.</strong></li>
+    <li>Select<strong>Disable Device Spoofing</strong> and <strong>Disable PlayStore Spoofing</strong>.</li>
+    <li>Reboot your device to apply changes.</li>
+  </ol>
+</div></section>
+
+<section id="modules"><div class="container">
+  <div class="kicker">Recommended module setup</div>
+  <h2>2. Remove existing modules, then install the recommended setup</h2>
+  <div class="card warning">Make sure to remove all installed modules before proceeding. They can interfere with Keybox, target scope, and spoofing, breaking module functionality. Keep your setup minimal for now to avoid wasting time troubleshooting. You can reinstall the modules later once you’ve achieved your goal.</div>
+  <div class="choice-list">
+    <div class="choice-row">
+      <div class="choice-label"><span class="choice-number">01</span><div><strong>Integrity Box</strong><small>Required · install first</small></div></div>
+      <div class="choice-options single">
+        <a class="choice-option" href="https://github.com/MeowDump/Integrity-Box/releases" target="_blank" rel="noopener"><span><strong>Integrity Box releases</strong><small>Open Source</small></span><span class="arrow">↗</span></a>
+      </div>
+    </div>
+    <div class="choice-row">
+      <div class="choice-label"><span class="choice-number">02</span><div><strong>Keybox Module</strong><small>Choose one option only</small></div></div>
+      <div class="choice-options">
+        <a class="choice-option" href="https://github.com/beakthoven/TrickyStoreOSS/releases" target="_blank" rel="noopener"><span><strong>Tricky Store OOS</strong><small>Open Source</small></span><span class="arrow">↗</span></a>
+        <a class="choice-option" href="https://github.com/JingMatrix/TEESimulator/releases" target="_blank" rel="noopener"><span><strong>TEE Simulator</strong><small>Open Source</small></span><span class="arrow">↗</span></a>
+      </div>
+    </div>
+    <div class="choice-row">
+      <div class="choice-label"><span class="choice-number">03</span><div><strong>Zygisk Module</strong><small>Choose one option only</small></div></div>
+      <div class="choice-options">
+        <a class="choice-option" href="https://github.com/MeowDump/MeowZygisk/releases" target="_blank" rel="noopener"><span><strong>MeowZygisk</strong><small>Open Source</small></span><span class="arrow">↗</span></a>
+        <a class="choice-option" href="https://github.com/LSPosed/ZygiskNext/releases" target="_blank" rel="noopener"><span><strong>Zygisk Next</strong><small>Close Source</small></span><span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="card warning"><strong>Note for Magisk users:</strong> install this <a href="https://github.com/MeowDump/KsuWebUIStandalone/releases" target="_blank" rel="noopener">WebUI app</a> and grant it root permission to use Integrity Box WebUI.</div>
+  <h3>Zygiskless mode</h3>
+  <p>If you use a Google Pixel stock ROM, or intentionally want to keep your custom ROM's own spoofing implementation, Integrity Box can run without its Zygisk-related components. Before flashing Integrity Box, create a file or folder named <code>zygisk</code> directly in internal storage at <code>/sdcard/zygisk</code>. The name must be lowercase. Integrity Box will then disable its Zygisk-related components, helping avoid overlap with the ROM's own implementation.</p>
+  <div class="card warning"><strong>Important:</strong> Use Zygiskless mode only when you deliberately do not want Integrity Box's Zygisk components. It is not a general-purpose fix for every device. Otherwise, choose one supported option from the Zygisk group above.</div>
+
+  <h3>Configure Integrity Box before rebooting</h3>
+  <p>After flashing Integrity Box for the first time, do not reboot immediately. Open your root manager's <strong>Modules</strong> section, launch Integrity Box WebUI, and complete the first-install configuration. Reboot only after setup is complete. Read the description if you need help understanding a setting.</p>
+  <div class="single-reference"><article class="reference-card">
+      <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/Configuration.png" data-caption="First-install configuration" aria-label="View image: First-install configuration"><img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/Configuration.png" alt="Integrity Box first-install configuration screen" loading="lazy"></button>
+      <div class="reference-copy"><strong>First-install configuration</strong><p>Complete this setup before the first reboot after installing Integrity Box.</p></div>
+    </article></div>
+</div>
+</section>
+
+<section id="check"><div class="container">
+  <div class="kicker">Verify before changing more settings</div>
+  <h2>3. Check Play Integrity in the Play Store</h2>
+  <p>Third-party checker apps shows incorrect and misleading results. Use the Google Play Store's built-in checker as your primary reference.</p>
+  <a class="open-app" href="intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.android.vending;end"><span>↗</span> Open Google Play Store</a>
+  <ol>
+    <li>Open the Google Play Store using the button above, or open it from your app drawer.</li>
+    <li>Go to <strong>Settings ↝ About</strong>.</li>
+    <li>Tap <strong>Play Store version</strong> repeatedly to enable Developer Options.</li>
+    <li>Go back to <strong>Settings ↝ General ↝ Developer Options</strong>.</li>
+    <li>Tap <strong>Check Integrity</strong> and read the result.</li>
+  </ol>
+  <p class="muted">If Developer Options do not appear, make sure the Play Store is up to date and repeat the steps.</p>
+</div></section>
+
+<section id="keybox"><div class="container">
+  <div class="kicker">Attestation checks</div>
+  <h2>4. Check the keybox and key attestation</h2>
+  <p>An invalid or revoked keybox, or a problem with key attestation, can prevent the expected result. A keybox showing as valid does not guarantee that Play Integrity will pass.</p>
+  <div class="reference-grid">
+    <article class="reference-card">
+      <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/KEY-STATUS.png" data-caption="Integrity Box keybox status screenshot" aria-label="View image: Integrity Box keybox status screenshot"><img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/KEY-STATUS.png" alt="Integrity Box keybox status screenshot" loading="lazy"></button>
+      <div class="reference-copy"><strong>Keybox status</strong><p>Use this screenshot to identify the keybox status area in WebUI.</p></div>
+    </article>
+    <article class="reference-card">
+      <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/KEY-ATTEST.png" data-caption="Integrity Box key attestation screenshot" aria-label="View image: Integrity Box key attestation screenshot"><img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/KEY-ATTEST.png" alt="Integrity Box key attestation screenshot" loading="lazy"></button>
+      <div class="reference-copy"><strong>Key attestation</strong><p>The bootloader status should be reported as Locked for this check. Use this reference to compare the attestation result.</p></div>
+    </article>
+  </div>
+  <div class="card">
+    <h3>Check key attestation</h3>
+    <p>Use the <a href="https://github.com/VisionR1/KeyAttestation/releases" target="_blank" rel="noopener">Key Attestation app</a> to find a compatible attestation viewer. Compare the result with the reference image above and check that the bootloader is reported as <strong>Locked</strong>. If the app reports an unlocked bootloader, or cannot read attestation data, follow the next step written below.</p>
+  </div>
+</div></section>
+
+<section id="repair"><div class="container">
+  <div class="kicker">Built-in tool</div>
+  <h2>5. Try Repair Mode</h2>
+  <p>If the keybox status looks valid but the Play Store check still fails, use Integrity Box's built-in Repair Mode before changing unrelated settings. It is a targeted troubleshooting step, which works most of the time, however it's not guaranteed that every cause can be fixed automatically.</p>
+  <div class="card blue">
+    <div class="step"><div class="num">1</div><div><h3>Open Integrity Box WebUI</h3><p>Launch it from your root manager. Magisk users needs the install KSU WebUI app.</p></div></div>
+    <div class="step"><div class="num">2</div><div><h3>Open Repair Mode</h3><p>Go to <strong>Repair Mode ↝ Repair</strong> and follow the instructions shown by the WebUI.</p></div></div>
+    <div class="step"><div class="num">3</div><div><h3>Check Attestation</h3><p>After the repair finishes, check key attestation app. It should display  <strong>Bootloader Is Locked.</strong> Use the Play Store's <strong>Check Integrity</strong> option again.</p></div></div>
+  </div>
+  <p class="muted">If the result does not change, continue with the checks below.</p>
+</div></section>
+
+<section id="certification"><div class="container">
+  <div class="kicker">Play Store certification</div>
+  <h2>6. If PlayStore says “Device Not Certified”</h2>
+  <p>Play Integrity results and Play Protect certification are different checks. If the Play Store says the device is not certified, check the message it displays and work through the likely cause.</p>
+  <div class="card">
+    <h3>Bootloader or custom ROM</h3>
+    <p>An unlocked bootloader or custom ROM may affect certification. Do not lock your bootloader as a quick fix: locking it on an unsupported setup can make the device unbootable. Only follow your device and ROM maintainer's official instructions.</p>
+  </div>
+  <div class="card">
+    <h3>Root detection</h3>
+    <p>Play Protect may detect a modified system. Review your root setup and any modules that modify Google services or system properties. Remove conflicting changes and test again.</p>
+  </div>
+  <div class="card">
+    <h3>Outdated security patch</h3>
+    <p>Check whether an official system update is available. Integrity Box also has patch-spoofing options, but the project README warns that patch spoofing can cause issues on some stock ROMs. Do not change it unless you understand the risk and have a recovery plan.</p>
+  </div>
+  <div class="card">
+    <h3>Google Play Services is updating</h3>
+    <p>If the error appeared during a Play Services update, wait for the update to finish, reboot if needed, and check again before changing your setup.</p>
+  </div>
+  <p class="muted">Certification errors can have different causes. Read the exact message instead of assuming every “Not certified” error has the same fix.</p>
+</div></section>
+
+<section id="other-fixes"><div class="container">
+  <div class="kicker">If it still fails</div>
+  <h2>7. Check these common causes</h2>
+  <div class="reference-grid">
+    <article class="reference-card">
+      <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/refs/heads/main/assets/new/GUIDE-DASHBOARD.png" data-caption="Integrity Box dashboard screenshot" aria-label="View image: Integrity Box dashboard screenshot"><img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/refs/heads/main/assets/new/GUIDE-DASHBOARD.png" alt="Integrity Box dashboard screenshot" loading="lazy"></button>
+      <div class="reference-copy"><strong>WebUI dashboard</strong><p>Click here to open dashboard.</p></div>
+    </article>
+    <article class="reference-card">
+      <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/GUIDE-SELINUX.png" data-caption="Integrity Box SELinux status screenshot" aria-label="View image: Integrity Box SELinux status screenshot"><img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/GUIDE-SELINUX.png" alt="Integrity Box SELinux status screenshot" loading="lazy"></button>
+      <div class="reference-copy"><strong>SELinux status</strong><p>Reference image showing where to find the SELinux status.</p></div>
+    </article>
+  </div>
+  <div class="step"><div class="num">1</div><div><h3>Check your device fingerprint</h3><p>A banned or broken fingerprint can cause failures. In Integrity Box WebUI, go to <strong>Set Profile</strong> and try a supported profile such as <code>PIXELIFY</code> or <code>SUPREME</code>, and test again.</p></div></div>
+  <div class="card warning">
+    <h3>Stock ROM: check patch spoofing</h3>
+    <p>On some stock ROMs, Play Integrity may still fail even when the rest of the setup looks correct because your Android system security patch is too old. In Integrity Box WebUI, open <strong>Module Settings</strong>,and disable <strong>Skip Patch Spoofing</strong>, and reboot your device.</p>
+    <p class="muted">Patch spoofing can cause issues on some OEM ROMs, That is why it comes disabled by default on stock ROMs.Do this at your own risk. If the change causes problems, simply revert it.</p>
+  </div>
+  <div class="reference-grid">
+<article class="reference-card">
+      <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/CONTROL-CENTRE2.png" data-caption="Module settings reference" aria-label="View image: Module settings reference"><img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/main/assets/new/CONTROL-CENTRE2.png" alt="Integrity Box module settings controls" loading="lazy"></button>
+      <div class="reference-copy"><strong>Module settings reference</strong><p>Use this screenshot to locate the skip patch spoofing feature in WebUI.</p></div>
+    </article></div>
+  <div class="step"><div class="num">2</div><div><h3>Look for conflicting modules</h3><p>Temporarily disable other modules that affect Google Play Services, the Play Store, Zygisk, or device properties. Test with the recommended setup before adding anything else.</p></div></div>
+  <div class="step"><div class="num">3</div><div><h3>Check SELinux status</h3><p>Integrity Box's dashboard can show the SELinux status. The project recommends <code>ENFORCING</code> mode. If it is <code>PERMISSIVE</code>, consider whether your ROM supports enforcing mode before changing anything.</p></div></div>
+  <div class="card danger"><strong>Advanced setting warning:</strong> the project includes a <strong>Spoof SELinux</strong> option under WebUI ↝ Module Settings, but the README warns that it may cause boot issues. Do not enable it casually. If you already enabled it and the device cannot boot, the project README says to remove <code>/data/adb/Box-Brain/spoof-selinux-boot</code> from recovery.</div>
+  <div class="step"><div class="num">4</div><div><h3>Consider a recent Google Play Services update</h3><p>If the problem began immediately after an update, check whether the update has completed. The project README also suggests testing after uninstalling Play Services updates where Android provides that option, but this is not guaranteed to help.</p></div></div>
+  <div class="step"><div class="num">5</div><div><h3>Clear Play Store data only when needed</h3><p>If you are starting over with a clean setup, clear Google Play Store data and reboot. You do not need to keep clearing data after every small change.</p></div></div>
+  <div class="step"><div class="num">6</div><div><h3>Change one thing at a time</h3><p>After each change, reboot if required (WebUI shows a toast messege) and check the result again. If you change several settings at once, it becomes much harder to know what actually helped.</p></div></div>
+</div></section>
+</div></section>
+<section id="webui-help"><div class="container"><div class="kicker">WebUI reference</div><h2>Understand a setting before changing it</h2><div class="card">
+    <h3>Learn what each WebUI setting does</h3>
+    <p>If you are unsure what a control does, Use the info button shown in the reference below and read the explanation before changing the setting.</p>
+    <div class="single-reference">
+      <article class="reference-card">
+        <button class="image-open" type="button" data-image="https://raw.githubusercontent.com/MeowDump/Integrity-Box/02f840aaff50c5d071481cda22a614e81f8fbd7a/assets/new/GUIDE-INFO-BTN1.png" data-caption="WebUI information button" aria-label="View image: WebUI information button">
+          <img src="https://raw.githubusercontent.com/MeowDump/Integrity-Box/02f840aaff50c5d071481cda22a614e81f8fbd7a/assets/new/GUIDE-INFO-BTN1.png" alt="Integrity Box WebUI information button" loading="lazy">
+        </button>
+        <div class="reference-copy"><strong>WebUI information button</strong><p>Use this help control to understand a setting before applying it.</p></div>
+      </article>
+    </div>
+  </div></div></section>
+</main>
+<footer><div class="container footer-inner">
+  <span>Authored by Mona  ©2026</span>
+  <div class="footer-actions">
+    <a class="icon-link" href="https://github.com/MeowDump/Integrity-Box" target="_blank" rel="noopener" aria-label="Integrity Box on GitHub" title="GitHub">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.67-3.76-1.32-3.76-1.32-.5-1.28-1.23-1.62-1.23-1.62-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15.99 1.7 2.6 1.21 3.23.92.1-.72.39-1.21.7-1.49-2.48-.28-5.09-1.24-5.09-5.52 0-1.22.44-2.22 1.15-3-.12-.28-.5-1.42.11-2.96 0 0 .94-.3 3.06 1.15a10.6 10.6 0 0 1 5.57 0c2.12-1.45 3.06-1.15 3.06-1.15.61 1.54.23 2.68.11 2.96.72.78 1.15 1.78 1.15 3 0 4.29-2.62 5.24-5.11 5.51.4.35.75 1.03.75 2.08V22c0 .29.2.64.77.53A11.1 11.1 0 0 0 12 .9Z"/></svg>
+    </a>
+    <a class="icon-link" href="https://t.me/MeowDump" target="_blank" rel="noopener" aria-label="Integrity Box Telegram group" title="Telegram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.7 3.2 18.4 20c-.25 1.19-.9 1.48-1.82.92l-5.03-3.71-2.43 2.34c-.27.27-.5.5-1.02.5l.36-5.12 9.32-8.42c.41-.36-.09-.56-.64-.2L5.62 13.5.66 11.95c-1.08-.34-1.1-1.08.23-1.6L20.3 2.8c.9-.33 1.69.22 1.4.4Z"/></svg>
+    </a>
+    <button class="copy-link" id="copyArticleLink" type="button" title="Copy article link" aria-label="Copy article link">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M10 13a5 5 0 0 0 7.07 0l3-3A5 5 0 0 0 13 2.93l-1.72 1.72M14 11a5 5 0 0 0-7.07 0l-3 3A5 5 0 0 0 11 21.07l1.72-1.72"/></svg>
+    </button>
+    <span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span>
+  </div>
+</div></footer>
+
+<div class="lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="Screenshot preview">
+  <div class="lightbox-dialog">
+    <button class="lightbox-close" type="button" aria-label="Close image preview">&times;</button>
+    <div class="lightbox-image-wrap"><img class="lightbox-image" src="" alt=""></div>
+    <div class="lightbox-tools">
+      <button type="button" data-zoom="out" aria-label="Zoom out">−</button>
+      <span class="zoom-level">100%</span>
+      <button type="button" data-zoom="in" aria-label="Zoom in">+</button>
+      <button type="button" data-zoom="reset">Reset zoom</button>
+    </div>
+    <div class="lightbox-caption"></div><div class="muted" style="font-size:12px;text-align:center">Use + / − to zoom. Scroll inside the image to inspect tall screenshots.</div>
+  </div>
+</div>
+<script>
+(() => {
+  const modal = document.getElementById('imageLightbox');
+  const modalImage = modal.querySelector('.lightbox-image');
+  const imageWrap = modal.querySelector('.lightbox-image-wrap');
+  const caption = modal.querySelector('.lightbox-caption');
+  const closeButton = modal.querySelector('.lightbox-close');
+  const zoomLabel = modal.querySelector('.zoom-level');
+  let previousFocus = null;
+  let zoom = 1;
+  let baseWidth = 0;
+
+  function fitImage() {
+    const available = Math.max(240, Math.min(imageWrap.clientWidth - 8, window.innerWidth * 0.88));
+    baseWidth = Math.min(modalImage.naturalWidth || available, available);
+    applyZoom();
+  }
+
+  function applyZoom() {
+    if (baseWidth > 0) modalImage.style.width = `${Math.round(baseWidth * zoom)}px`;
+    zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
+  }
+
+  function resetZoom() {
+    zoom = 1;
+    imageWrap.scrollTop = 0;
+    imageWrap.scrollLeft = 0;
+    if (modalImage.complete && modalImage.naturalWidth) fitImage();
+    else { baseWidth = 0; modalImage.style.width = 'auto'; zoomLabel.textContent = '100%'; }
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modalImage.src = '';
+    document.body.style.overflow = '';
+    resetZoom();
+    if (previousFocus) previousFocus.focus();
+  }
+
+  document.querySelectorAll('.image-open').forEach(button => {
+    button.addEventListener('click', () => {
+      previousFocus = button;
+      modalImage.src = button.dataset.image;
+      modalImage.alt = button.dataset.caption || 'Integrity Box screenshot';
+      caption.textContent = button.dataset.caption || '';
+      resetZoom();
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      closeButton.focus();
+    });
+  });
+
+  modalImage.addEventListener('load', fitImage);
+  window.addEventListener('resize', () => { if (modal.classList.contains('open')) fitImage(); });
+
+  modal.querySelectorAll('[data-zoom]').forEach(button => {
+    button.addEventListener('click', () => {
+      if (button.dataset.zoom === 'in') zoom = Math.min(zoom * 1.25, 5);
+      if (button.dataset.zoom === 'out') zoom = Math.max(zoom / 1.25, 0.5);
+      if (button.dataset.zoom === 'reset') zoom = 1;
+      applyZoom();
+    });
+  });
+
+  modalImage.addEventListener('wheel', event => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    zoom = Math.max(0.5, Math.min(5, zoom * (event.deltaY < 0 ? 1.15 : 1 / 1.15)));
+    applyZoom();
+  }, { passive: false });
+
+  closeButton.addEventListener('click', closeModal);
+  modal.addEventListener('click', event => {
+    if (event.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+})();
+</script>
+
+</body>
+</html>

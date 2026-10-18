@@ -298,7 +298,7 @@ body{
   <iframe id="pageFrame" src=""></iframe>
 </div>
 
-<audio id="bg-music" src="music.mp3" loop></audio>
+<audio id="bg-music" src="music.mp3" autoplay loop preload="auto" playsinline></audio>
 
 <script>
 const resources = [
@@ -319,6 +319,15 @@ const resources = [
     author:"𝗠𝗘𝗢𝗪𝗻𝗮 💅",
     date:"2026-04-30",
     link:"osint.html"
+  },
+  {
+    id:3,
+    title:"Play Integrity Troubleshooting",
+    desc:"A practical diagnose guide",
+    icon:"verified_user",
+    author:"𝗠𝗘𝗢𝗪𝗻𝗮 💅",
+    date:"2026-10-18",
+    link:"play-integrity.html"
   }
 ];
 function formatDate(dateStr){
@@ -430,24 +439,47 @@ window.addEventListener('popstate', event => {
 
 const music = document.getElementById('bg-music');
 const musicIcon = document.getElementById('musicIcon');
-let musicStarted = false;
+let musicMutedByUser = false;
+music.volume = 0.35;
+
+async function startMusic(){
+  if (musicMutedByUser || !music.paused) return;
+  try { await music.play(); } catch { }
+}
+
+startMusic();
+window.addEventListener('pageshow', startMusic);
+document.addEventListener('pointerdown', startMusic);
+document.addEventListener('keydown', startMusic);
 
 async function toggleMusic(){
-  if(music.paused){
+  if (musicMutedByUser) {
+    musicMutedByUser = false;
     try {
       await music.play();
-      musicIcon.textContent = 'music_note';
     } catch {
-      musicIcon.textContent = 'music_off';
+      musicMutedByUser = true;
     }
   } else {
+    musicMutedByUser = true;
     music.pause();
-    musicIcon.textContent = 'music_off';
+  }
+  updateMusicIcon();
+}
+
+function updateMusicIcon(){
+  const isOff = musicMutedByUser || music.paused;
+  musicIcon.textContent = isOff ? 'music_off' : 'music_note';
+  const button = musicIcon.closest('button');
+  if (button) {
+    button.title = isOff ? 'Unmute Music' : 'Mute Music';
+    button.setAttribute('aria-label', button.title);
   }
 }
 
-music.addEventListener('play',()=>musicIcon.textContent='music_note');
-music.addEventListener('pause',()=>musicIcon.textContent='music_off');
+music.addEventListener('play', updateMusicIcon);
+music.addEventListener('pause', updateMusicIcon);
+updateMusicIcon();
 
 document.addEventListener('click',e=>{
   const link = e.target.closest('a');
